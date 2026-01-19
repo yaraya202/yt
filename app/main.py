@@ -37,29 +37,51 @@ async def info(url: str = Form(...)):
         info = await get_video_info(url, str(COOKIES_PATH))
         formats = []
         for f in info.get('formats', []):
-            if f.get('vcodec') != 'none' or f.get('acodec') != 'none':
+            # Include formats that have either video or audio
+            # and specifically look for 'audio only' if vcodec is none
+            vcodec = f.get('vcodec')
+            acodec = f.get('acodec')
+            
+            if vcodec != 'none' or acodec != 'none':
                 height = f.get('height')
                 ext = f.get('ext')
                 filesize = f.get('filesize') or f.get('filesize_approx') or 0
                 
-                label = f"{height}p" if height else "Audio only"
+                if vcodec != 'none':
+                    label = f"{height}p" if height else "Video"
+                else:
+                    label = "Audio only"
+                
                 label += f" ({ext})"
                 
                 formats.append({
                     "format_id": f['format_id'],
                     "label": label,
                     "filesize": filesize,
-                    "ext": ext
+                    "ext": ext,
+                    "is_audio": vcodec == 'none'
                 })
         
         # Sort: Video first (high to low), then Audio
-        formats.sort(key=lambda x: (0 if "p" in x['label'] else 1, -int(x['label'].split('p')[0]) if "p" in x['label'] else 0))
+        def sort_key(x):
+            if not x['is_audio']:
+                # Video formats
+                try:
+                    h = int(x['label'].split('p')[0])
+                except:
+                    h = 0
+                return (0, -h)
+            else:
+                # Audio formats
+                return (1, 0)
+
+        formats.sort(key=sort_key)
         
         return {
             "title": info.get('title', 'Unknown Title'),
             "thumbnail": info.get('thumbnail'),
             "duration": info.get('duration'),
-            "formats": formats[:20]
+            "formats": formats[:30] # Increase to show more options
         }
     except Exception as e:
         return JSONResponse(status_code=400, content={"detail": str(e)})
