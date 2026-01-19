@@ -143,47 +143,75 @@ async def get_file(task_id: str):
 @app.get("/api/download")
 async def api_download(url: str, type: str = "video"):
     """
-    Direct download API.
-    Usage: /api/download?url=LINK&type=video|audio
+    Mixed API.
+    Audio -> Direct Download
+    Video -> JSON Response with all formats
     """
     try:
         info = await get_video_info(url, str(COOKIES_PATH))
         title = info.get('title', 'video')
-        
-        # Select best format based on type
-        formats = info.get('formats', [])
-        selected_format = None
-        
+        formats_raw = info.get('formats', [])
+
         if type == "audio":
-            # Look for best audio only
-            audio_formats = [f for f in formats if f.get('vcodec') == 'none' and f.get('acodec') != 'none']
-            if audio_formats:
-                # Prefer m4a/mp4 for compatibility
-                m4a = [f for f in audio_formats if f.get('ext') == 'm4a']
-                selected_format = m4a[0]['format_id'] if m4a else audio_formats[0]['format_id']
-        else:
-            # Look for best video with audio (progressive) or highest resolution
-            video_formats = [f for f in formats if f.get('vcodec') != 'none']
-            if video_formats:
-                # Try to find 720p or 1080p mp4
-                preferred = [f for f in video_formats if f.get('height') in [720, 1080] and f.get('ext') == 'mp4']
-                selected_format = preferred[0]['format_id'] if preferred else video_formats[0]['format_id']
-        
-        if not selected_format:
-            raise HTTPException(status_code=400, detail="No suitable format found")
+            # Direct Audio Download logic
+            audio_formats = [f for f in formats_raw if f.get('vcodec') == 'none' and f.get('acodec') != 'none']
+            if not audio_formats:
+                raise HTTPException(status_code=400, detail="No audio format found")
             
-        task_id = str(uuid.uuid4())
-        outtmpl = str(DOWNLOAD_DIR / f"{task_id}.%(ext)s")
-        download_tasks[task_id] = {"status": "starting", "file_path": None, "title": title}
+            # Prefer m4a for compatibility
+            m4a = [f for f in audio_formats if f.get('ext') == 'm4a']
+            selected_format = m4a[0]['format_id'] if m4a else audio_formats[0]['format_id']
+            
+            task_id = str(uuid.uuid4())
+            outtmpl = str(DOWNLOAD_DIR / f"{task_id}.%(ext)s")
+            download_tasks[task_id] = {"status": "starting", "file_path": None, "title": title}
+            
+            await run_download(url, selected_format, outtmpl, task_id)
+            
+            if download_tasks[task_id]["status"] == "completed":
+                return await get_file(task_id)
+            else:
+                raise HTTPException(status_code=500, detail="Audio download failed")
         
-        # Start download synchronously for this simple API
-        await run_download(url, selected_format, outtmpl, task_id)
-        
-        if download_tasks[task_id]["status"] == "completed":
-            return await get_file(task_id)
         else:
-            raise HTTPException(status_code=500, detail="Download failed")
+            # Video JSON Response logic
+            video_formats = []
+            for f in formats_raw:
+                vcodec = f.get('vcodec')
+                if vcodec != 'none':
+                    height = f.get('height')
+                    ext = f.get('ext')
+                    filesize = f.get('filesize') or f.get('filesize_approx') or 0
+                    
+                    video_formats.append({
+                        "format_id": f['format_id'],
+                        "label": f"{height}p ({ext})",
+                        "filesize_mb": round(filesize / (1024 * 1024), 2),
+                        "ext": ext,
+                        "download_url": f"/api/start-specific-download?url={url}&format_id={f['format_id']}&title={title}"
+                    })
+            
+            # Sort video formats by height descending
+            video_formats.sort(key=lambda x: int(x['label'].split('p')[0]) if 'p' in x['label'] else 0, reverse=True)
+            
+            return {
+                "title": title,
+                "thumbnail": info.get('thumbnail'),
+                "duration": info.get('duration'),
+                "formats": video_formats
+            }
             
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/start-specific-download")
+async def start_specific_download(url: str, format_id: str, title: str):
+    """Internal helper for API downloads"""
+    task_id = str(uuid.uuid4())
+    outtmpl = str(DOWNLOAD_DIR / f"{task_id}.%(ext)s")
+    download_tasks[task_id] = {"status": "starting", "file_path": None, "title": title}
+    await run_download(url, format_id, outtmpl, task_id)
+    if download_tasks[task_id]["status"] == "completed":
+        return await get_file(task_id)
+    raise HTTPException(status_code=500, detail="Download failed")
 
