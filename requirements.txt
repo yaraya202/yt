@@ -4,3 +4,9 @@ yt-dlp
 python-multipart
 jinja2
 aiofiles
+aiofiles
+fastapi
+jinja2
+python-multipart
+uvicorn[standard]
+yt-dlp
