@@ -13,7 +13,12 @@ except ImportError:
     from downloader import get_video_info, start_download
 
 app = FastAPI(title="YouTube Video + Audio Downloader")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/favicon.ico")
 
 COOKIES_PATH = Path("cookies.txt")
 DOWNLOAD_DIR = Path("downloads")
