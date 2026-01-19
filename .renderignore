@@ -4,3 +4,9 @@ cookies.txt
 .pythonlibs/
 __pycache__/
 *.log
+.git/
+.replit
+replit.md
+.upm/
+yt.zip
+attached_assets/
