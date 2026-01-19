@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - YT Raza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
+    </style>
+</head>
+<body class="min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-red-500 border-b border-gray-800 pb-4">Admin Dashboard</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div class="bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-700">
+                <p class="text-gray-400 text-sm uppercase font-bold mb-2">Total Website Visits</p>
+                <p class="text-5xl font-black">{{ stats.total_visits }}</p>
+            </div>
+            <div class="bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-700">
+                <p class="text-gray-400 text-sm uppercase font-bold mb-2">Total Downloads</p>
+                <p class="text-5xl font-black">{{ stats.total_downloads }}</p>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-6 rounded-3xl border border-gray-700">
+            <h2 class="text-xl font-bold mb-4">System Info</h2>
+            <div class="space-y-2 text-gray-400">
+                <p>Status: <span class="text-green-500">Online</span></p>
+                <p>Cookies: Found</p>
+                <p>Last Update: {{ now }}</p>
+            </div>
+        </div>
+        
+        <div class="mt-8">
+            <a href="/" class="text-gray-500 hover:text-white transition-colors">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

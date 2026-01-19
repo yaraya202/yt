@@ -27,9 +27,27 @@ if not COOKIES_PATH.exists():
     COOKIES_PATH.touch()
     print("Warning: cookies.txt created but is empty. Restricted videos might fail.")
 
+# Simple stats storage (in-memory for now)
+stats = {
+    "total_visits": 0,
+    "total_downloads": 0,
+    "recent_downloads": []
+}
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
+    stats["total_visits"] += 1
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_page(request: Request, key: str = None):
+    if key != "5264":
+        return HTMLResponse("<h1>Access Denied</h1>", status_code=403)
+    
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "stats": stats
+    })
 
 @app.post("/get-info")
 async def info(url: str = Form(...)):
@@ -100,6 +118,7 @@ async def download(background_tasks: BackgroundTasks, url: str = Form(...), form
 
 async def run_download(url: str, format_id: str, outtmpl: str, task_id: str):
     try:
+        stats["total_downloads"] += 1
         download_tasks[task_id]["status"] = "downloading"
         await start_download(url, format_id, outtmpl, str(COOKIES_PATH), task_id)
         
