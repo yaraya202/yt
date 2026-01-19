@@ -1,0 +1,6 @@
+# .renderignore
+downloads/
+cookies.txt
+.pythonlibs/
+__pycache__/
+*.log
