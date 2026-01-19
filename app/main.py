@@ -139,3 +139,51 @@ async def get_file(task_id: str):
     filename = f"{safe_title}{ext}"
     
     return FileResponse(file_path, filename=filename)
+
+@app.get("/api/download")
+async def api_download(url: str, type: str = "video"):
+    """
+    Direct download API.
+    Usage: /api/download?url=LINK&type=video|audio
+    """
+    try:
+        info = await get_video_info(url, str(COOKIES_PATH))
+        title = info.get('title', 'video')
+        
+        # Select best format based on type
+        formats = info.get('formats', [])
+        selected_format = None
+        
+        if type == "audio":
+            # Look for best audio only
+            audio_formats = [f for f in formats if f.get('vcodec') == 'none' and f.get('acodec') != 'none']
+            if audio_formats:
+                # Prefer m4a/mp4 for compatibility
+                m4a = [f for f in audio_formats if f.get('ext') == 'm4a']
+                selected_format = m4a[0]['format_id'] if m4a else audio_formats[0]['format_id']
+        else:
+            # Look for best video with audio (progressive) or highest resolution
+            video_formats = [f for f in formats if f.get('vcodec') != 'none']
+            if video_formats:
+                # Try to find 720p or 1080p mp4
+                preferred = [f for f in video_formats if f.get('height') in [720, 1080] and f.get('ext') == 'mp4']
+                selected_format = preferred[0]['format_id'] if preferred else video_formats[0]['format_id']
+        
+        if not selected_format:
+            raise HTTPException(status_code=400, detail="No suitable format found")
+            
+        task_id = str(uuid.uuid4())
+        outtmpl = str(DOWNLOAD_DIR / f"{task_id}.%(ext)s")
+        download_tasks[task_id] = {"status": "starting", "file_path": None, "title": title}
+        
+        # Start download synchronously for this simple API
+        await run_download(url, selected_format, outtmpl, task_id)
+        
+        if download_tasks[task_id]["status"] == "completed":
+            return await get_file(task_id)
+        else:
+            raise HTTPException(status_code=500, detail="Download failed")
+            
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
