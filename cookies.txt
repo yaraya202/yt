@@ -1,0 +1,23 @@
+# Netscape HTTP Cookie File
+# This is a generated file!  Do not edit.
+
+.youtube.com	TRUE	/	TRUE	0	__Secure-1PSIDTS	sidts-CjUB7I_69FxHW2QCiA4MxMN3cOdtRC92m5e79NG729hrvN-u7yf2XHnEUj6EMclRyCa2ny1AdBAA
+.youtube.com	TRUE	/	TRUE	0	__Secure-3PSIDTS	sidts-CjUB7I_69FxHW2QCiA4MxMN3cOdtRC92m5e79NG729hrvN-u7yf2XHnEUj6EMclRyCa2ny1AdBAA
+.youtube.com	TRUE	/	FALSE	0	HSID	Axvvi7FadBeeCoEkp
+.youtube.com	TRUE	/	FALSE	0	SSID	As1unpmenzygkSXVV
+.youtube.com	TRUE	/	FALSE	0	APISID	59zjzUgQktgx33dq/AAOi3y4BYyIC72S-6
+.youtube.com	TRUE	/	TRUE	0	SAPISID	LiKWq-8gQME3PYNf/A0xqExwiRrW7Gl1oi
+.youtube.com	TRUE	/	TRUE	0	__Secure-1PAPISID	LiKWq-8gQME3PYNf/A0xqExwiRrW7Gl1oi
+.youtube.com	TRUE	/	TRUE	0	__Secure-3PAPISID	LiKWq-8gQME3PYNf/A0xqExwiRrW7Gl1oi
+.youtube.com	TRUE	/	FALSE	0	SID	g.a0005wjQsplZsjkxOo5-mAeXeKE0W1wyrgl3mGjjVkRp9zcJQYLwl8a1NBOcm4e0OIHjQupXegACgYKAX0SARESFQHGX2MiNz_hpzfNW07XmFPfSEZJJxoVAUF8yKp-UkljsQgpIq__3lRC_6jH0076
+.youtube.com	TRUE	/	TRUE	0	__Secure-1PSID	g.a0005wjQsplZsjkxOo5-mAeXeKE0W1wyrgl3mGjjVkRp9zcJQYLwzgIGckwk68KATq2EJ93fqgACgYKAQwSARESFQHGX2MiouSgqy9S8yGfvSY5GTyDlBoVAUF8yKo77IK6heNTP55gviNrP4dC0076
+.youtube.com	TRUE	/	TRUE	0	__Secure-3PSID	g.a0005wjQsplZsjkxOo5-mAeXeKE0W1wyrgl3mGjjVkRp9zcJQYLwhnWLSc3DBpeVigBTfQ5HCgACgYKAV8SARESFQHGX2Miv0afKeDsv9PLSPy8dnoimhoVAUF8yKrhh4xLrzl_FfKuJhCAH1xK0076
+.youtube.com	TRUE	/	TRUE	0	__Secure-YNID	15.YT=VzqodTPSls3c8rbOYwmoHXYUq3V9lQjo5ipqIkk5A8rDsPkLQDGvVHRs7gmsZRl99CKkPpLIJMkBTi_9iEXjGOrN-3YcqwvOcRVfpvdyTpes69t-THuRf4Lg9WpG7VUbHVDQSoddQq4ilWb68mICAr849urd8UmB1A9PmOKfYf2pQ6iFjF64yhcYYGLAd4A2lb3OFCS1zeY4YKp3DSWNwYTnBpLb4KxM6IKKoz9-HVOUPigE0CHwnBr_4VNQupKHsIIsbkg3eaojpfUNNw8OpbipzKAGR78kaFMgeZ592OvpuJSF2NRfyHpTLSlxdpqkylkNwPgiJ876N_wQjFaWlA
+.youtube.com	TRUE	/	FALSE	0	YSC	NPJ_EOYiux4
+.youtube.com	TRUE	/	FALSE	0	VISITOR_INFO1_LIVE	7YzMqpAepms
+.youtube.com	TRUE	/	FALSE	0	VISITOR_PRIVACY_METADATA	CgJQSxIEGgAgZQ%3D%3D
+.youtube.com	TRUE	/	FALSE	0	PREF	f6=40000000&tz=Asia.Karachi
+.youtube.com	TRUE	/	FALSE	0	__Secure-ROLLOUT_TOKEN	CO3Ox7-pgp5wEIb97eull5IDGLjMneiyl5ID
+.youtube.com	TRUE	/	FALSE	0	SIDCC	AKEyXzXp5KGE8kGjoiCwDV5Z8zYhbkXcWJfnTxBjnR3cEhM9z_gHA_asew5pLIgHqzp20NM89Q
+.youtube.com	TRUE	/	TRUE	0	__Secure-1PSIDCC	AKEyXzWZ3krNodY1zcRj2OryKkyx0nLn4o5WF8pU-xyuzttpz4kwg-95xMO9N9c22ye8coqj_A
+.youtube.com	TRUE	/	TRUE	0	__Secure-3PSIDCC	AKEyXzV3QD2JmoIVkjy3iBgqC_0nGomBjhHW_DMkxtVsTMxp14Rhq0WZJfAIrSenPyrxWjdI

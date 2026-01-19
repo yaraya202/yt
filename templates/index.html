@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Downloader</title>
+    <meta charset="UTF-8">
+    <style> body {font-family: Arial;} form {margin:20px;} </style>
+</head>
+<body>
+    <h1>YouTube Video/Audio Downloader</h1>
+    <form id="urlForm">
+        <input type="text" name="url" placeholder="YouTube URL" style="width:400px;" required>
+        <button type="submit">Get Formats</button>
+    </form>
+
+    <div id="formats"></div>
+
+    <script>
+    document.getElementById('urlForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const resp = await fetch('/get-info', {method: 'POST', body: formData});
+        const data = await resp.json();
+        let html = `<h2>${data.title}</h2><form action="/download" method="POST">
+            <input type="hidden" name="url" value="${formData.get('url')}">
+            <select name="format_id" required>`;
+        data.formats.forEach(f => {
+            html += `<option value="${f.format_id}"> ${f.label} (${(f.filesize/1024/1024).toFixed(1)} MB)</option>`;
+        });
+        html += `</select><button>Download</button></form>`;
+        document.getElementById('formats').innerHTML = html;
+    });
+    </script>
+</body>
+</html>
