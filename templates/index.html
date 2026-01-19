@@ -97,6 +97,8 @@
 
         let currentUrl = '';
 
+        let videoTitle = '';
+
         urlForm.onsubmit = async (e) => {
             e.preventDefault();
             const formData = new FormData(urlForm);
@@ -113,6 +115,7 @@
                 
                 if (data.detail) throw new Error(data.detail);
 
+                videoTitle = data.title;
                 document.getElementById('thumbnail').src = data.thumbnail;
                 document.getElementById('videoTitle').innerText = data.title;
                 document.getElementById('duration').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${Math.floor(data.duration/60)}:${(data.duration%60).toString().padStart(2, '0')}`;
@@ -149,6 +152,7 @@
                 const formData = new FormData();
                 formData.append('url', currentUrl);
                 formData.append('format_id', format_id);
+                formData.append('title', videoTitle);
 
                 const resp = await fetch('/download', {method: 'POST', body: formData});
                 const { task_id } = await resp.json();

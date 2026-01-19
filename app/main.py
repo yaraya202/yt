@@ -87,12 +87,12 @@ async def info(url: str = Form(...)):
         return JSONResponse(status_code=400, content={"detail": str(e)})
 
 @app.post("/download")
-async def download(background_tasks: BackgroundTasks, url: str = Form(...), format_id: str = Form(...)):
+async def download(background_tasks: BackgroundTasks, url: str = Form(...), format_id: str = Form(...), title: str = Form(...)):
     task_id = str(uuid.uuid4())
     # We use a placeholder for extension which yt-dlp will fill
     outtmpl = str(DOWNLOAD_DIR / f"{task_id}.%(ext)s")
     
-    download_tasks[task_id] = {"status": "starting", "file_path": None}
+    download_tasks[task_id] = {"status": "starting", "file_path": None, "title": title}
     
     background_tasks.add_task(run_download, url, format_id, outtmpl, task_id)
     
@@ -125,8 +125,17 @@ async def get_file(task_id: str):
     if task_id not in download_tasks or download_tasks[task_id]["status"] != "completed":
         raise HTTPException(status_code=404, detail="File not ready")
     
-    file_path = download_tasks[task_id]["file_path"]
+    file_info = download_tasks[task_id]
+    file_path = file_info["file_path"]
+    original_title = file_info["title"]
+    
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found on disk")
     
-    return FileResponse(file_path, filename=os.path.basename(file_path))
+    # Get extension from the actual file
+    ext = Path(file_path).suffix
+    # Clean filename: remove special characters
+    safe_title = "".join([c for c in original_title if c.isalnum() or c in (' ', '.', '-', '_')]).strip()
+    filename = f"{safe_title}{ext}"
+    
+    return FileResponse(file_path, filename=filename)
